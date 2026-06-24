@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { AdmissionsModule } from "@/components/admissions/AdmissionsModule";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admissions")({
-  component: AdmissionsModule,
+  beforeLoad: () => {
+    throw redirect({ to: "/residents/admissions" });
+  },
 });

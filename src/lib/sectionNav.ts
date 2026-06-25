@@ -47,14 +47,13 @@ export const SECTIONS: SectionDef[] = [
       { id: "reports",     label: "Reports" },
     ] },
 
-  { path: "/care-plans",    label: "Care Plans",    icon: ClipboardCheck,  defaultTab: "overview",
+  { path: "/care-plans",    label: "Care Plans",    icon: ClipboardCheck,  defaultTab: "builder",
     category: "Resident Care",
     tabs: [
-      { id: "overview",    label: "Overview" },
-      { id: "assessments", label: "Assessments" },
-      { id: "goals",       label: "Goals" },
-      { id: "tasks",       label: "Tasks" },
-      { id: "reviews",     label: "Reviews" },
+      { id: "builder",   label: "Plan Builder" },
+      { id: "schedule",  label: "Review Schedule" },
+      { id: "tracker",   label: "Active Problems" },
+      { id: "templates", label: "Templates" },
     ] },
 
   { path: "/emar",          label: "eMAR",          icon: Pill,            defaultTab: "overview",

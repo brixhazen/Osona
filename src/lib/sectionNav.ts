@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  LayoutDashboard, Stethoscope, FileCheck2, ClipboardList, ClipboardCheck,
+  LayoutDashboard, Stethoscope, ClipboardList, ClipboardCheck,
   Pill, HeartHandshake, Users, DollarSign, Landmark, ShieldCheck,
   CalendarDays, UtensilsCrossed, Wrench, AlertTriangle, GraduationCap, BarChart3,
 } from "lucide-react";
@@ -17,31 +17,25 @@ export interface SectionDef {
   defaultTab: string;
   tabs: SectionTab[];
   category?: "Resident Care" | "Business" | "Operations" | "Quality / Learning";
+  routeBased?: boolean;
 }
 
 export const SECTIONS: SectionDef[] = [
   { path: "/",              label: "Dashboard",     icon: LayoutDashboard, defaultTab: "overview",
     tabs: [{ id: "overview", label: "Overview" }] },
 
-  { path: "/residents",     label: "Residents",     icon: Stethoscope,     defaultTab: "roster",
+  { path: "/residents",     label: "Residents",     icon: Users,           defaultTab: "roster",
     category: "Resident Care",
+    routeBased: true,
     tabs: [
       { id: "roster",      label: "Roster" },
       { id: "profiles",    label: "Profiles" },
-      { id: "care-level",  label: "Care Level" },
-      { id: "contacts",    label: "Contacts" },
-      { id: "documents",   label: "Documents" },
+      { id: "admissions",  label: "Admissions" },
     ] },
 
-  { path: "/admissions",    label: "Admissions",    icon: FileCheck2,      defaultTab: "overview",
+  { path: "/clinical",      label: "Clinical",      icon: Stethoscope,     defaultTab: "charts",
     category: "Resident Care",
-    tabs: [
-      { id: "overview",    label: "Overview" },
-      { id: "inquiries",   label: "Inquiries" },
-      { id: "tours",       label: "Tours" },
-      { id: "applications",label: "Applications" },
-      { id: "move-ins",    label: "Move-ins" },
-    ] },
+    tabs: [{ id: "charts", label: "Charts" }] },
 
   { path: "/crm",           label: "CRM / Sales",   icon: ClipboardList,   defaultTab: "pipeline",
     category: "Business",
@@ -53,14 +47,13 @@ export const SECTIONS: SectionDef[] = [
       { id: "reports",     label: "Reports" },
     ] },
 
-  { path: "/care-plans",    label: "Care Plans",    icon: ClipboardCheck,  defaultTab: "overview",
+  { path: "/care-plans",    label: "Care Plans",    icon: ClipboardCheck,  defaultTab: "builder",
     category: "Resident Care",
     tabs: [
-      { id: "overview",    label: "Overview" },
-      { id: "assessments", label: "Assessments" },
-      { id: "goals",       label: "Goals" },
-      { id: "tasks",       label: "Tasks" },
-      { id: "reviews",     label: "Reviews" },
+      { id: "builder",   label: "Plan Builder" },
+      { id: "schedule",  label: "Review Schedule" },
+      { id: "tracker",   label: "Active Problems" },
+      { id: "templates", label: "Templates" },
     ] },
 
   { path: "/emar",          label: "eMAR",          icon: Pill,            defaultTab: "overview",
@@ -188,7 +181,6 @@ export const SECTIONS: SectionDef[] = [
 ];
 
 export function findSection(pathname: string): SectionDef | null {
-  // exact match for "/"; longest-prefix for others
   if (pathname === "/") return SECTIONS[0];
   const candidates = SECTIONS.filter((s) => s.path !== "/" && pathname.startsWith(s.path));
   return candidates.sort((a, b) => b.path.length - a.path.length)[0] ?? null;

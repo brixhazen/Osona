@@ -22,12 +22,17 @@ import { Route as EmarRouteImport } from './routes/emar'
 import { Route as DiningRouteImport } from './routes/dining'
 import { Route as CrmRouteImport } from './routes/crm'
 import { Route as ComplianceRouteImport } from './routes/compliance'
+import { Route as ClinicalRouteImport } from './routes/clinical'
 import { Route as CarePlansRouteImport } from './routes/care-plans'
 import { Route as BillingRouteImport } from './routes/billing'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as AdmissionsRouteImport } from './routes/admissions'
 import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ResidentsIndexRouteImport } from './routes/residents.index'
+import { Route as ResidentsRosterRouteImport } from './routes/residents.roster'
+import { Route as ResidentsProfilesRouteImport } from './routes/residents.profiles'
+import { Route as ResidentsAdmissionsRouteImport } from './routes/residents.admissions'
 import { Route as PayInvoiceIdRouteImport } from './routes/pay.$invoiceId'
 
 const WorkforceRoute = WorkforceRouteImport.update({
@@ -95,6 +100,11 @@ const ComplianceRoute = ComplianceRouteImport.update({
   path: '/compliance',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClinicalRoute = ClinicalRouteImport.update({
+  id: '/clinical',
+  path: '/clinical',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CarePlansRoute = CarePlansRouteImport.update({
   id: '/care-plans',
   path: '/care-plans',
@@ -125,6 +135,26 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResidentsIndexRoute = ResidentsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ResidentsRoute,
+} as any)
+const ResidentsRosterRoute = ResidentsRosterRouteImport.update({
+  id: '/roster',
+  path: '/roster',
+  getParentRoute: () => ResidentsRoute,
+} as any)
+const ResidentsProfilesRoute = ResidentsProfilesRouteImport.update({
+  id: '/profiles',
+  path: '/profiles',
+  getParentRoute: () => ResidentsRoute,
+} as any)
+const ResidentsAdmissionsRoute = ResidentsAdmissionsRouteImport.update({
+  id: '/admissions',
+  path: '/admissions',
+  getParentRoute: () => ResidentsRoute,
+} as any)
 const PayInvoiceIdRoute = PayInvoiceIdRouteImport.update({
   id: '/pay/$invoiceId',
   path: '/pay/$invoiceId',
@@ -138,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AnalyticsRoute
   '/billing': typeof BillingRoute
   '/care-plans': typeof CarePlansRoute
+  '/clinical': typeof ClinicalRoute
   '/compliance': typeof ComplianceRoute
   '/crm': typeof CrmRoute
   '/dining': typeof DiningRoute
@@ -146,12 +177,16 @@ export interface FileRoutesByFullPath {
   '/family-portal': typeof FamilyPortalRoute
   '/finances': typeof FinancesRoute
   '/maintenance': typeof MaintenanceRoute
-  '/residents': typeof ResidentsRoute
+  '/residents': typeof ResidentsRouteWithChildren
   '/safety': typeof SafetyRoute
   '/settings': typeof SettingsRoute
   '/training': typeof TrainingRoute
   '/workforce': typeof WorkforceRoute
   '/pay/$invoiceId': typeof PayInvoiceIdRoute
+  '/residents/admissions': typeof ResidentsAdmissionsRoute
+  '/residents/profiles': typeof ResidentsProfilesRoute
+  '/residents/roster': typeof ResidentsRosterRoute
+  '/residents/': typeof ResidentsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -160,6 +195,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AnalyticsRoute
   '/billing': typeof BillingRoute
   '/care-plans': typeof CarePlansRoute
+  '/clinical': typeof ClinicalRoute
   '/compliance': typeof ComplianceRoute
   '/crm': typeof CrmRoute
   '/dining': typeof DiningRoute
@@ -168,12 +204,15 @@ export interface FileRoutesByTo {
   '/family-portal': typeof FamilyPortalRoute
   '/finances': typeof FinancesRoute
   '/maintenance': typeof MaintenanceRoute
-  '/residents': typeof ResidentsRoute
   '/safety': typeof SafetyRoute
   '/settings': typeof SettingsRoute
   '/training': typeof TrainingRoute
   '/workforce': typeof WorkforceRoute
   '/pay/$invoiceId': typeof PayInvoiceIdRoute
+  '/residents/admissions': typeof ResidentsAdmissionsRoute
+  '/residents/profiles': typeof ResidentsProfilesRoute
+  '/residents/roster': typeof ResidentsRosterRoute
+  '/residents': typeof ResidentsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -183,6 +222,7 @@ export interface FileRoutesById {
   '/analytics': typeof AnalyticsRoute
   '/billing': typeof BillingRoute
   '/care-plans': typeof CarePlansRoute
+  '/clinical': typeof ClinicalRoute
   '/compliance': typeof ComplianceRoute
   '/crm': typeof CrmRoute
   '/dining': typeof DiningRoute
@@ -191,12 +231,16 @@ export interface FileRoutesById {
   '/family-portal': typeof FamilyPortalRoute
   '/finances': typeof FinancesRoute
   '/maintenance': typeof MaintenanceRoute
-  '/residents': typeof ResidentsRoute
+  '/residents': typeof ResidentsRouteWithChildren
   '/safety': typeof SafetyRoute
   '/settings': typeof SettingsRoute
   '/training': typeof TrainingRoute
   '/workforce': typeof WorkforceRoute
   '/pay/$invoiceId': typeof PayInvoiceIdRoute
+  '/residents/admissions': typeof ResidentsAdmissionsRoute
+  '/residents/profiles': typeof ResidentsProfilesRoute
+  '/residents/roster': typeof ResidentsRosterRoute
+  '/residents/': typeof ResidentsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -207,6 +251,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/billing'
     | '/care-plans'
+    | '/clinical'
     | '/compliance'
     | '/crm'
     | '/dining'
@@ -221,6 +266,10 @@ export interface FileRouteTypes {
     | '/training'
     | '/workforce'
     | '/pay/$invoiceId'
+    | '/residents/admissions'
+    | '/residents/profiles'
+    | '/residents/roster'
+    | '/residents/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -229,6 +278,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/billing'
     | '/care-plans'
+    | '/clinical'
     | '/compliance'
     | '/crm'
     | '/dining'
@@ -237,12 +287,15 @@ export interface FileRouteTypes {
     | '/family-portal'
     | '/finances'
     | '/maintenance'
-    | '/residents'
     | '/safety'
     | '/settings'
     | '/training'
     | '/workforce'
     | '/pay/$invoiceId'
+    | '/residents/admissions'
+    | '/residents/profiles'
+    | '/residents/roster'
+    | '/residents'
   id:
     | '__root__'
     | '/'
@@ -251,6 +304,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/billing'
     | '/care-plans'
+    | '/clinical'
     | '/compliance'
     | '/crm'
     | '/dining'
@@ -265,6 +319,10 @@ export interface FileRouteTypes {
     | '/training'
     | '/workforce'
     | '/pay/$invoiceId'
+    | '/residents/admissions'
+    | '/residents/profiles'
+    | '/residents/roster'
+    | '/residents/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -274,6 +332,7 @@ export interface RootRouteChildren {
   AnalyticsRoute: typeof AnalyticsRoute
   BillingRoute: typeof BillingRoute
   CarePlansRoute: typeof CarePlansRoute
+  ClinicalRoute: typeof ClinicalRoute
   ComplianceRoute: typeof ComplianceRoute
   CrmRoute: typeof CrmRoute
   DiningRoute: typeof DiningRoute
@@ -282,7 +341,7 @@ export interface RootRouteChildren {
   FamilyPortalRoute: typeof FamilyPortalRoute
   FinancesRoute: typeof FinancesRoute
   MaintenanceRoute: typeof MaintenanceRoute
-  ResidentsRoute: typeof ResidentsRoute
+  ResidentsRoute: typeof ResidentsRouteWithChildren
   SafetyRoute: typeof SafetyRoute
   SettingsRoute: typeof SettingsRoute
   TrainingRoute: typeof TrainingRoute
@@ -383,6 +442,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ComplianceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/clinical': {
+      id: '/clinical'
+      path: '/clinical'
+      fullPath: '/clinical'
+      preLoaderRoute: typeof ClinicalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/care-plans': {
       id: '/care-plans'
       path: '/care-plans'
@@ -425,6 +491,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/residents/': {
+      id: '/residents/'
+      path: '/'
+      fullPath: '/residents/'
+      preLoaderRoute: typeof ResidentsIndexRouteImport
+      parentRoute: typeof ResidentsRoute
+    }
+    '/residents/roster': {
+      id: '/residents/roster'
+      path: '/roster'
+      fullPath: '/residents/roster'
+      preLoaderRoute: typeof ResidentsRosterRouteImport
+      parentRoute: typeof ResidentsRoute
+    }
+    '/residents/profiles': {
+      id: '/residents/profiles'
+      path: '/profiles'
+      fullPath: '/residents/profiles'
+      preLoaderRoute: typeof ResidentsProfilesRouteImport
+      parentRoute: typeof ResidentsRoute
+    }
+    '/residents/admissions': {
+      id: '/residents/admissions'
+      path: '/admissions'
+      fullPath: '/residents/admissions'
+      preLoaderRoute: typeof ResidentsAdmissionsRouteImport
+      parentRoute: typeof ResidentsRoute
+    }
     '/pay/$invoiceId': {
       id: '/pay/$invoiceId'
       path: '/pay/$invoiceId'
@@ -435,6 +529,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ResidentsRouteChildren {
+  ResidentsAdmissionsRoute: typeof ResidentsAdmissionsRoute
+  ResidentsProfilesRoute: typeof ResidentsProfilesRoute
+  ResidentsRosterRoute: typeof ResidentsRosterRoute
+  ResidentsIndexRoute: typeof ResidentsIndexRoute
+}
+
+const ResidentsRouteChildren: ResidentsRouteChildren = {
+  ResidentsAdmissionsRoute: ResidentsAdmissionsRoute,
+  ResidentsProfilesRoute: ResidentsProfilesRoute,
+  ResidentsRosterRoute: ResidentsRosterRoute,
+  ResidentsIndexRoute: ResidentsIndexRoute,
+}
+
+const ResidentsRouteWithChildren = ResidentsRoute._addFileChildren(
+  ResidentsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivitiesRoute: ActivitiesRoute,
@@ -442,6 +554,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyticsRoute: AnalyticsRoute,
   BillingRoute: BillingRoute,
   CarePlansRoute: CarePlansRoute,
+  ClinicalRoute: ClinicalRoute,
   ComplianceRoute: ComplianceRoute,
   CrmRoute: CrmRoute,
   DiningRoute: DiningRoute,
@@ -450,7 +563,7 @@ const rootRouteChildren: RootRouteChildren = {
   FamilyPortalRoute: FamilyPortalRoute,
   FinancesRoute: FinancesRoute,
   MaintenanceRoute: MaintenanceRoute,
-  ResidentsRoute: ResidentsRoute,
+  ResidentsRoute: ResidentsRouteWithChildren,
   SafetyRoute: SafetyRoute,
   SettingsRoute: SettingsRoute,
   TrainingRoute: TrainingRoute,
@@ -460,3 +573,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

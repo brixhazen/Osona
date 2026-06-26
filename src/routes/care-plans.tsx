@@ -1,83 +1,45 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { ClipboardList } from "lucide-react";
-import {
-  RESIDENTS, CLINICAL_DATA,
-  type ResidentClinicalData, type CarePlanProblem,
-} from "@/lib/mock/clinical";
-import { ResidentRoster } from "@/components/clinical/ResidentRoster";
-import { CarePlanTab } from "@/components/clinical/tabs/CarePlanTab";
+import { createFileRoute, useSearch } from "@tanstack/react-router";
+import { ClipboardList, CalendarDays, AlertCircle, LayoutTemplate } from "lucide-react";
 import { ModuleHeader } from "@/components/shell/ModuleHeader";
+import { PlanBuilder } from "@/components/care-plans/PlanBuilder";
+import { ComingSoon } from "@/components/shell/ComingSoon";
 
 const MODULE_COLOR = "#2BBFAA";
 
-function initData(): Record<string, ResidentClinicalData> {
-  return Object.fromEntries(
-    Object.entries(CLINICAL_DATA).map(([id, d]) => [
-      id,
-      {
-        medications: d.medications.map((m) => ({ ...m, todayPasses: m.todayPasses.map((p) => ({ ...p })) })),
-        vitals: [...d.vitals],
-        carePlan: d.carePlan.map((p) => ({ ...p, interventions: [...p.interventions] })),
-        assessments: [...d.assessments],
-        adlRecords: d.adlRecords.map((r) => ({ ...r, adls: { ...r.adls } })),
-        notes: [...d.notes],
-        incidents: d.incidents.map((i) => ({ ...i })),
-        documents: [...d.documents],
-      },
-    ]),
-  );
-}
-
 function CarePlansPage() {
-  const [selectedId, setSelectedId] = useState<string | null>(RESIDENTS[1].id);
-  const [localData, setLocalData] = useState<Record<string, ResidentClinicalData>>(initData);
-  const selected = RESIDENTS.find((r) => r.id === selectedId) ?? null;
-
-  function addCarePlanProblem(residentId: string, problem: CarePlanProblem) {
-    setLocalData((prev) => ({
-      ...prev,
-      [residentId]: { ...prev[residentId], carePlan: [problem, ...prev[residentId].carePlan] },
-    }));
-  }
-
-  function resolveCarePlanProblem(residentId: string, problemId: string) {
-    setLocalData((prev) => ({
-      ...prev,
-      [residentId]: {
-        ...prev[residentId],
-        carePlan: prev[residentId].carePlan.map((p) =>
-          p.id === problemId ? { ...p, status: "resolved" as const } : p,
-        ),
-      },
-    }));
-  }
+  const search = useSearch({ strict: false }) as { tab?: string };
+  const activeTab = search.tab ?? "builder";
 
   return (
     <div className="flex flex-col gap-5 -m-6 p-6 min-h-full" style={{ backgroundColor: `${MODULE_COLOR}08` }}>
       <ModuleHeader
         name="Care Plans"
-        description="Active problems, goals, and interventions per resident."
+        description="Build and manage resident care plans, goals, and interventions."
         icon={ClipboardList}
         color={MODULE_COLOR}
       />
-      <div className="flex gap-5">
-        <ResidentRoster selectedId={selectedId} onSelect={setSelectedId} />
-        <div className="flex-1 min-w-0 rounded-lg bg-card border border-border p-5">
-          {selected ? (
-            <CarePlanTab
-              resident={selected}
-              data={localData[selected.id]}
-              onAddProblem={(p) => addCarePlanProblem(selected.id, p)}
-              onResolveProblem={(id) => resolveCarePlanProblem(selected.id, id)}
-            />
-          ) : (
-            <div className="flex items-center justify-center h-64">
-              <p className="text-sm text-muted-foreground">Select a resident to view their care plan.</p>
-            </div>
-          )}
-        </div>
-      </div>
+      {activeTab === "builder"   && <PlanBuilder />}
+      {activeTab === "schedule"  && (
+        <ComingSoon
+          title="Review Schedule"
+          icon={CalendarDays}
+          blurb="Upcoming care plan reviews and overdue assessments across all residents."
+        />
+      )}
+      {activeTab === "tracker"   && (
+        <ComingSoon
+          title="Active Problems"
+          icon={AlertCircle}
+          blurb="A facility-wide view of open care plan problems by category and priority."
+        />
+      )}
+      {activeTab === "templates" && (
+        <ComingSoon
+          title="Templates"
+          icon={LayoutTemplate}
+          blurb="Reusable care plan templates and goal banks for common diagnoses."
+        />
+      )}
     </div>
   );
 }
@@ -86,7 +48,7 @@ export const Route = createFileRoute("/care-plans")({
   head: () => ({
     meta: [
       { title: "Care Plans — Haven OS" },
-      { name: "description", content: "Resident care plans, goals, and interventions." },
+      { name: "description", content: "Build and manage resident care plans, goals, and interventions." },
     ],
   }),
   component: CarePlansPage,

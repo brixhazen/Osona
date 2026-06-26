@@ -121,8 +121,8 @@ function NavLink({ section, currentPath }: { section: SectionDef; currentPath: s
 
 function SectionTabs({ section }: { section: NonNullable<ReturnType<typeof findSection>> }) {
   const navigate = useNavigate();
+  const path = useRouterState({ select: (s) => s.location.pathname });
   const search = useSearch({ strict: false }) as { tab?: string };
-  const active = search.tab || section.defaultTab;
 
   return (
     <div className="space-y-0.5 pt-1">
@@ -130,7 +130,27 @@ function SectionTabs({ section }: { section: NonNullable<ReturnType<typeof findS
         {section.label}
       </div>
       {section.tabs.map((t) => {
-        const isActive = t.id === active;
+        let isActive: boolean;
+        const tabCls = (active: boolean) =>
+          cn(
+            "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-left transition-colors",
+            active
+              ? "bg-primary text-primary-foreground"
+              : "text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+          );
+
+        if (section.routeBased) {
+          const href = `${section.path}/${t.id}`;
+          isActive = path === href || path.startsWith(href + "/");
+          return (
+            <Link key={t.id} to={href as never} className={tabCls(isActive)}>
+              <span className="truncate">{t.label}</span>
+            </Link>
+          );
+        }
+
+        const activeTab = search.tab || section.defaultTab;
+        isActive = t.id === activeTab;
         return (
           <button
             key={t.id}
@@ -142,12 +162,7 @@ function SectionTabs({ section }: { section: NonNullable<ReturnType<typeof findS
                 replace: true,
               } as never)
             }
-            className={cn(
-              "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-left transition-colors",
-              isActive
-                ? "bg-primary text-primary-foreground"
-                : "text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-            )}
+            className={tabCls(isActive)}
           >
             <span className="truncate">{t.label}</span>
           </button>

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Search, AlertTriangle, Shield } from "lucide-react";
+import { Search, AlertTriangle, Shield, ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { RESIDENTS, type Resident, type CareLevel } from "@/lib/mock/clinical";
 import { cn } from "@/lib/utils";
 
@@ -75,6 +76,14 @@ export function ResidentRoster({ selectedId, onSelect }: Props) {
           <p className="text-xs text-muted-foreground text-center py-8">No residents match.</p>
         )}
       </div>
+
+      <Link
+        to="/residents/roster"
+        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors px-1 pt-2"
+      >
+        View all residents
+        <ArrowRight className="w-3 h-3" />
+      </Link>
     </div>
   );
 }
